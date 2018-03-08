@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<script src="https://maps.googleapis.com/maps/api/js?libraries=places&amp;key=AIzaSyB8VUXU2t3lcyWlbEbox3zPxNP3ejEtMRc" type="text/javascript"></script>
+</head>
+<body>
+	<form>
+		<!-- Récupère toutes les données concernant une adresse donnée-->
+    <div>
+      
+      <input id="user_input_autocomplete_address" placeholder="Votre adresse..." style="width:300px;">
+    </div>
+    
+    <div>
+      <label>Numéro</label>
+      <input id="street_number" name="street_number" disabled>
+    </div>
+ 
+    <div>
+      <label>Route</label>
+      <input id="route" name="route" disabled>
+    </div>
+ 
+    <div>
+      <label>Code postal</label>
+      <input id="postal_code" name="postal_code" disabled>
+    </div>
+ 
+    <div>
+      <label>Ville</label>
+      <input id="locality" name="locality" disabled>
+    </div>
+    
+    <div>
+      <label>Pays</label>
+      <input id="country" name="country" disabled>
+    </div>
+ 
+    <div>
+      <label>Latitude</label>
+      <input id="latitude" name="latitude" disabled>
+    </div>
+ 
+    <div>
+      <label>Longitude</label>
+      <input id="longitude" name="longitude" disabled>
+    </div>
+  </form>
+<script type="text/javascript">
+  // Lie le champs adresse en champs autocomplete afin que l'API puisse afficher les propositions d'adresses
+  function initializeAutocomplete(id) {
+    var element = document.getElementById(id);
+    if (element) {
+     var autocomplete = new google.maps.places.Autocomplete(element, { types: ['geocode'] });
+     google.maps.event.addListener(autocomplete, 'place_changed', onPlaceChanged);
+    }
+  }
+ 
+  // Injecte les données dans les champs du formulaire lorsqu'une adresse est sélectionnée
+  function onPlaceChanged() {
+    var place = this.getPlace();
+ 
+    for (var i in place.address_components) {
+      var component = place.address_components[i];
+      for (var j in component.types) {  
+        var type_element = document.getElementById(component.types[j]);
+        if (type_element) {
+          type_element.value = component.long_name;
+        }
+      }
+    }
+ 
+    var longitude = document.getElementById("longitude");
+    var latitude = document.getElementById("latitude");
+    longitude.value = place.geometry.location.lng();
+    latitude.value = place.geometry.location.lat();
+  }
+ 
+  // Initialisation du champs autocomplete
+  google.maps.event.addDomListener(window, 'load', function() {
+    initializeAutocomplete('user_input_autocomplete_address');
+  });
+</script>
+</body>
+</html>
